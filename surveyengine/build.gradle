@@ -1,0 +1,50 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    // Apply the java-library plugin to add support for Java Library
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation project(path: ':scriptengine', configuration: 'default')
+//     last version supporting android api 21
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.5'
+    implementation group: 'org.json', name: 'json', version: '20231013'
+
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+tasks.withType(KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            groupId = "com.qlarr.survey-engine"
+            artifactId = "surveyengine"
+            version = "0.1.0"
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/qlarr-surveys/survey-engine")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+

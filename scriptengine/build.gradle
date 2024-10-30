@@ -1,0 +1,47 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    // Apply the java-library plugin to add support for Java Library
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+tasks.withType(KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+
+dependencies {
+    implementation project(path: ':surveyengine', configuration: 'default')
+    implementation 'org.graalvm.js:js:22.3.1'
+    implementation 'org.graalvm.js:js-scriptengine:22.3.1'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            groupId = "com.qlarr.survey-engine"
+            artifactId = "scriptengine"
+            version = "0.1.0"
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/qlarr-surveys/survey-engine")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
