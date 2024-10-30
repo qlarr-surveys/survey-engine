@@ -66,8 +66,10 @@ internal class ContextBuilder(
         sanitizedNestedComponents.let { sanitisedComponents ->
             val systemInstructions = sanitisedComponents.map { childlessComponent ->
                 childlessComponent.instructionList
-                    .filter { it is Instruction.State && it.reservedCode.requiresValidation }
-                    .map { instruction ->
+                    .filter {
+                        it is Instruction.State && it.reservedCode.requiresValidation &&
+                                (it.isActive || it.reservedCode != ReservedCode.Value || it.text.isNotEmpty())
+                    }.map { instruction ->
                         ComponentInstruction(
                             childlessComponent.code,
                             (instruction as Instruction.State).runnableInstruction()
