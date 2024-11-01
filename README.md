@@ -14,7 +14,7 @@ Qlarr Survey Engine is a UI-agnostic tool that lets you create and run customiza
 8. **WIP**: ⏱️ Time limits and 📊 Scoring for Quizzes
 9. **WIP**: 🎨 Conditional Formatting
 
-## Usage
+## Usecases
 Qlarr Survey Engine has two main usecases
 
 
