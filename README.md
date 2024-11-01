@@ -33,3 +33,7 @@ takes processed survey and existing user responses (if any) and generates:
 2. **Survey State**: Resources to build a state machine that runs on UI to react to user interaction and update the survey state.
 3. **Values to Save**: the user responses to save to the database
 <img width="723" alt="Screenshot 2024-10-31 at 21 24 13" src="https://github.com/user-attachments/assets/2394a22a-2525-4ef2-bb41-1aaacbc69a92">
+
+## State of Development
+This library is writted in Kotlin JVM, and used to support a Spring boot backend and an Android application. 
+Future plan is to re-write it in Kotlin Native, to support also Node.js backend and iOS applications.
