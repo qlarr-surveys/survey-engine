@@ -38,19 +38,23 @@ sealed class ReservedCode(
             isRuntime = false
         )
 
-    data object Prioritised : ReservedCode("prioritised", executionOrder = 1)
+    data object Prioritised : ReservedCode("prioritised", executionOrder = 1, isAccessible = true)
 
-    data object NotSkipped : ReservedCode("not_skipped", executionOrder = 1)
+    data object NotSkipped : ReservedCode("not_skipped", executionOrder = 1, isAccessible = true)
 
-    data object ConditionalRelevance : ReservedCode("conditional_relevance", executionOrder = 1, requiresValidation = true)
+    data object ConditionalRelevance :
+        ReservedCode("conditional_relevance", executionOrder = 1, requiresValidation = true, isAccessible = true)
 
-    data object ChildrenRelevance : ReservedCode("children_relevance", executionOrder = 1, requiresValidation = true)
+    data object ChildrenRelevance : ReservedCode("children_relevance", executionOrder = 1, requiresValidation = true, isAccessible = true)
+
+    data object ModeRelevance : ReservedCode("mode_relevance", executionOrder = 1, requiresValidation = true, isAccessible = true)
 
     data object Relevance : ReservedCode("relevance", executionOrder = 2, true)
 
     data object Value : ReservedCode("value", executionOrder = 3, true, true, requiresValidation = true)
 
-    data class ValidationRule(override val code: String) : ReservedCode(code, executionOrder = 5, requiresValidation = true)
+    data class ValidationRule(override val code: String) :
+        ReservedCode(code, executionOrder = 5, requiresValidation = true)
 
     data object Validity : ReservedCode("validity", executionOrder = 6, true)
 
@@ -66,7 +70,7 @@ sealed class ReservedCode(
 
     data object AfterNavigation : ReservedCode("after_navigation", executionOrder = 8)
 
-    data object Order : ReservedCode("order", isAccessible = true,  requiresValidation = true)
+    data object Order : ReservedCode("order", isAccessible = true, requiresValidation = true)
 
     data object Priority : ReservedCode("priority", isAccessible = true, isRuntime = false)
 
@@ -88,8 +92,9 @@ sealed class ReservedCode(
             is Meta, RelevanceMap, ValidityMap -> ReturnType.QlarrMap
             is BeforeNavigation, AfterNavigation -> ReturnType.QlarrList
             is Lang, is Mode, is Value, is MaskedValue, is Label -> ReturnType.QlarrString
-            is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ChildrenRelevance, is InCurrentNavigation,
-            is Skip, is Validity, is ValidationRule, is ShowErrors, is HasPrevious, is HasNext -> ReturnType.QlarrBoolean
+            is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
+            is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
+            is HasPrevious, is HasNext -> ReturnType.QlarrBoolean
         }
     }
 

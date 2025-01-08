@@ -3,6 +3,7 @@ package com.qlarr.surveyengine.context.assemble
 import com.qlarr.surveyengine.dependency.DependencyMapper
 import com.qlarr.surveyengine.dependency.ForwardDependencyAnalyzer
 import com.qlarr.surveyengine.dependency.componentIndices
+import com.qlarr.surveyengine.ext.splitToComponentCodes
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.usecase.ScriptEngineValidate
 import com.qlarr.surveyengine.usecase.ScriptValidationInput
@@ -108,6 +109,7 @@ internal class ContextBuilder(
             addPrioritisedInstruction("")
             addRelevanceToSkipInstructions()
             skipMap = addNotSkippedInstructions(componentIndexList)
+            addModeRelevanceInstruction()
             addParentRelevanceInstruction()
             adjustRelevanceInstruction()
             addValidityInstructions()

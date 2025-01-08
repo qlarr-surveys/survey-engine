@@ -7,6 +7,47 @@ import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.RandomOption.FLIP
 import com.qlarr.surveyengine.model.Instruction.RandomOption.RANDOM
 
+internal fun List<ChildlessComponent>.parents(code: String): List<String> {
+    val childlessComponent = first { it.code == code }
+    if (childlessComponent.parentCode.isEmpty()) {
+        return emptyList()
+    }
+    val parent = first { it.code == childlessComponent.parentCode }
+    return listOf(parent.code).plus(parents(parent.code))
+
+}
+
+internal fun List<ChildlessComponent>.commonParent(code1: String, code2: String): ChildlessComponent? {
+    val parents1 = parents(code1)
+    val parents2 = parents(code2)
+    return parents1.firstOrNull { parents2.contains(it) }?.let { code ->
+        first { it.code == code }
+    }
+}
+
+internal fun MutableList<SurveyComponent>.correctInstruction(
+    parents: List<String>,
+    componentCode: String,
+    reservedCode: ReservedCode,
+    instructionText: String
+) {
+    if (parents.isEmpty()) {
+        val index = indexOfFirst { it.code == componentCode }
+        val component = get(index)
+        val instruction = component.instructionList.first { it.code == reservedCode.code } as Instruction.State
+        val newComponent = component.replaceOrAddInstruction(instruction.withValidatedText(instructionText))
+        set(index, newComponent)
+    } else {
+        val index = indexOfFirst { it.code == parents.first() }
+        val component = get(index)
+        val newChildren = component.children.toMutableList().apply {
+            correctInstruction(parents.takeLast(parents.size - 1), componentCode, reservedCode, instructionText)
+        }
+        set(index, component.duplicate(children = newChildren))
+    }
+
+}
+
 internal fun List<SurveyComponent>.getSchema(
     parentCode: String = "",
     randomizedChildrenCodes: List<String> = listOf(),

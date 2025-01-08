@@ -1,11 +1,11 @@
 package com.qlarr.surveyengine.usecase
 
-import com.qlarr.surveyengine.model.ResponseField
+import com.qlarr.surveyengine.context.assemble.*
 import com.qlarr.surveyengine.context.assemble.ContextBuilder
-import com.qlarr.surveyengine.context.assemble.NotSkippedInstructionManifesto
 import com.qlarr.surveyengine.context.assemble.getSchema
-import com.qlarr.surveyengine.context.assemble.runtimeScript
+import com.qlarr.surveyengine.model.ResponseField
 import com.qlarr.surveyengine.dependency.DependencyMapper
+import com.qlarr.surveyengine.ext.splitToComponentCodes
 import com.qlarr.surveyengine.model.ComponentIndex
 import com.qlarr.surveyengine.model.StringImpactMap
 import com.qlarr.surveyengine.model.Survey
@@ -21,7 +21,12 @@ class ValidationUseCaseImpl(scriptEngine: ScriptEngineValidate, survey: Survey) 
 
         contextManager.validate(validateSpecialTypeGroups)
         val sanitisedComponents = contextManager.sanitizedNestedComponents
-        val dependencyMapper = DependencyMapper(sanitisedComponents)
+        val dependencyMapper = DependencyMapper(sanitisedComponents, true)
+
+        dependencyMapper.correctedInstructions.forEach { dependency, instructionText ->
+            val parents = contextManager.sanitizedNestedComponents.parents(dependency.componentCode)
+            contextManager.components.correctInstruction(parents.reversed(), dependency.componentCode.splitToComponentCodes().last(), dependency.reservedCode, instructionText)
+        }
         return ValidationOutput(
             contextManager.components[0] as Survey,
             dependencyMapper.impactMap.toStringImpactMap(),

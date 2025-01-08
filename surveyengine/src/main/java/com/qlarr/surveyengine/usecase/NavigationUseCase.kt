@@ -14,7 +14,7 @@ import com.qlarr.surveyengine.navigate.*
 import kotlin.collections.flatten
 
 interface NavigationUseCase {
-    fun navigate(scriptEngine: ScriptEngineNavigate,): NavigationOutput
+    fun navigate(scriptEngine: ScriptEngineNavigate): NavigationOutput
     fun getNavigationScript(): String
     fun processNavigationResult(scriptResult: String): NavigationOutput
 }
@@ -39,9 +39,9 @@ class NavigationUseCaseImp(
     private lateinit var contextRunner: ContextRunner
 
 
-    override fun navigate(scriptEngine: ScriptEngineNavigate,): NavigationOutput {
+    override fun navigate(scriptEngine: ScriptEngineNavigate): NavigationOutput {
         val script = getNavigationScript()
-        val scriptResult = scriptEngine.navigate( script)
+        val scriptResult = scriptEngine.navigate(script)
         return processNavigationResult(scriptResult)
     }
 
@@ -49,7 +49,7 @@ class NavigationUseCaseImp(
     override fun getNavigationScript(): String {
         val alphaSorted = mutableMapOf<Dependency, Int>()
         if (navigationInfo.navigationDirection == NavigationDirection.Start) {
-            startupRandomValues.putAll(survey.randomize(RandomOption.values().toList()) { getLabel(it) })
+            startupRandomValues.putAll(survey.randomize(RandomOption.entries) { getLabel(it) })
             startupRandomValues.putAll(survey.setPriorities())
         } else {
             alphaSorted.putAll(survey.randomize(listOf(RandomOption.ALPHA)) { getLabel(it) })
@@ -111,7 +111,8 @@ class NavigationUseCaseImp(
             "Survey",
             ReservedCode.Validity
         )] as Boolean
-        val newNavIndex = survey.navigate(navigationInfo, navigationMode, navigationBindings, skipInvalid, currentIndexValidity)
+        val newNavIndex =
+            survey.navigate(navigationInfo, navigationMode, navigationBindings, skipInvalid, currentIndexValidity)
 
         extraBindings.putAll(runtimeContextBuilder.addShowErrorsInstruction(survey, !newNavIndex.showError))
         extraBindings.putAll(runtimeContextBuilder.addValidityInstruction(survey, newNavIndex))

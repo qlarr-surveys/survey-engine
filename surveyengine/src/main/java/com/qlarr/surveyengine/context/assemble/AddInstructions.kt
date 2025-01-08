@@ -1,10 +1,9 @@
 package com.qlarr.surveyengine.context.assemble
 
-import com.qlarr.surveyengine.model.ReservedCode
-import com.qlarr.surveyengine.model.ReservedCode.*
 import com.qlarr.surveyengine.context.*
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.ParentRelevance
+import com.qlarr.surveyengine.model.ReservedCode.*
 
 internal fun MutableList<SurveyComponent>.addPreviousNextInstruction() {
     if (size == 1 && get(0) is Survey) {
@@ -80,8 +79,8 @@ internal fun SurveyComponent.adjustRelevanceInstruction(
     if (hasConsiderableRelevance(ChildrenRelevance)) {
         text = if (text == "true") "$code.children_relevance" else "$text && $code.children_relevance"
     }
-    if (this !is Survey && hasMode()) {
-        text = if (text == "true") "Survey.mode === \"${mode()}\"" else "$text && Survey.mode === \"${mode()}\""
+    if (hasConsiderableRelevance(ModeRelevance)) {
+        text = if (text == "true") "$code.mode_relevance" else "$text && $code.mode_relevance"
     }
     if (hasConsiderableRelevance(NotSkipped)) {
         text = if (text == "true") "$code.not_skipped" else "$text && $code.not_skipped"
@@ -106,6 +105,24 @@ internal fun SurveyComponent.adjustRelevanceInstruction(
 
 }
 
+
+internal fun MutableList<SurveyComponent>.addModeRelevanceInstruction() {
+    forEachIndexed { index, surveyComponent ->
+        if (surveyComponent.hasErrors()) {
+            return@forEachIndexed
+        }
+        var returnComponent = surveyComponent.duplicate(
+            children = surveyComponent.children.toMutableList().apply { addModeRelevanceInstruction() })
+
+        if (returnComponent !is Survey && returnComponent.hasMode()) {
+            val text = "Survey.mode === \"${returnComponent.mode()}\""
+            returnComponent = returnComponent.insertOrOverrideState(Relevance, text, true)
+        }
+
+
+        set(index, returnComponent)
+    }
+}
 
 internal fun MutableList<SurveyComponent>.addParentRelevanceInstruction(parentCode: String = "") {
     forEachIndexed { index, surveyComponent ->
@@ -272,7 +289,11 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
             postfix = "",
             separator = " && ",
             transform = {
-                "(!${it.uniqueCode(qualifiedCode)}.in_current_navigation || !${it.uniqueCode(qualifiedCode)}.relevance || ${it.uniqueCode(qualifiedCode)}.validity)"
+                "(!${it.uniqueCode(qualifiedCode)}.in_current_navigation || !${it.uniqueCode(qualifiedCode)}.relevance || ${
+                    it.uniqueCode(
+                        qualifiedCode
+                    )
+                }.validity)"
             })
     } else if (this is Question || this is Answer) {
         if (hasActiveValidationRules()) {
@@ -333,6 +354,7 @@ internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
                     .addOrder(index)
                     .removeState(Prioritised)
                     .removeState(ChildrenRelevance)
+                    .removeState(ModeRelevance)
                     .removeState(NotSkipped)
                     .insertOrOverrideState(Priority, index.toString(), false)
             }
@@ -380,6 +402,7 @@ private fun SurveyComponent.mode(): String {
 private fun SurveyComponent.hasConsiderableRelevanceAsChild(): Boolean {
     return hasConsiderableRelevance(ConditionalRelevance)
             || hasConsiderableRelevance(ChildrenRelevance)
+            || hasConsiderableRelevance(ModeRelevance)
             || hasConsiderableRelevance(NotSkipped)
 }
 
@@ -389,7 +412,7 @@ private fun SurveyComponent.getConsiderableRelevanceAsChild(): List<ReservedCode
         .filter { it.noErrors() }
         .filterIsInstance<Instruction.State>()
         .filter {
-            it.reservedCode in listOf(ConditionalRelevance, ChildrenRelevance, NotSkipped)
+            it.reservedCode in listOf(ConditionalRelevance, ChildrenRelevance, NotSkipped, ModeRelevance)
         }
         .filter { it.text != "true" }
         .map { it.reservedCode }

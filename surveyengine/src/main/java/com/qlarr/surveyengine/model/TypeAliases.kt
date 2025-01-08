@@ -1,5 +1,7 @@
 package com.qlarr.surveyengine.model
 
+import com.qlarr.surveyengine.dependency.CyclicCorrection
+
 typealias ImpactMap = Map<Dependency, List<Dependent>>
 typealias StringImpactMap = Map<String, List<String>>
 typealias DependencyMapBundle = Pair<ImpactMap, DependencyMap>

@@ -114,6 +114,7 @@ sealed class Instruction(
         fun runnableInstruction() = RunnableInstruction(code, text, returnType, isActive, errors)
 
         abstract fun withValidatedInstruction(validatedInstruction: RunnableInstruction): State
+        abstract fun withValidatedText(validatedText: String): State
 
     }
 
@@ -134,6 +135,8 @@ sealed class Instruction(
             isActive = validatedInstruction.isActive,
             errors = validatedInstruction.errors
         )
+
+        override fun withValidatedText(validatedText: String) = copy(text = validatedText)
 
 
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
@@ -163,6 +166,8 @@ sealed class Instruction(
             isActive = validatedInstruction.isActive,
             errors = validatedInstruction.errors
         )
+
+        override fun withValidatedText(validatedText: String) = copy(condition = validatedText)
 
 
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })

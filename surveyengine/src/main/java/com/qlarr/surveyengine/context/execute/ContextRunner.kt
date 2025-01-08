@@ -1,12 +1,12 @@
 package com.qlarr.surveyengine.context.execute
 
-import com.qlarr.surveyengine.model.ReservedCode.*
 import com.qlarr.surveyengine.context.assemble.NotSkippedInstructionManifesto
 import com.qlarr.surveyengine.dependency.toDependent
 import com.qlarr.surveyengine.ext.VALID_QUESTION_CODE
 import com.qlarr.surveyengine.model.Dependency
 import com.qlarr.surveyengine.model.DependencyMap
 import com.qlarr.surveyengine.model.Instruction.State
+import com.qlarr.surveyengine.model.ReservedCode.*
 
 internal class ContextRunner(
     private val instructionsMap: LinkedHashMap<Dependency, State>,
@@ -21,12 +21,15 @@ internal class ContextRunner(
                 dependency.componentCode == "Survey" -> {
                     dependency.reservedCode in listOf(Validity)
                 }
+
                 dependency.componentCode.matches(Regex(VALID_QUESTION_CODE)) -> {
                     dependency.reservedCode in listOf(Relevance, Validity)
                 }
+
                 dependency.componentCode.startsWith("G") -> {
                     dependency.reservedCode in listOf(Relevance, Validity)
                 }
+
                 else -> {
                     false
                 }

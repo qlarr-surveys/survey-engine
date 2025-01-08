@@ -133,7 +133,7 @@ class DependencyMapperTest {
 
 
     private var contextBuilder: ContextBuilder = ContextBuilder(scriptEngine = buildScriptEngine())
-    private var dependencyMapper: DependencyMapper = DependencyMapper()
+    private lateinit var dependencyMapper: DependencyMapper
 
     @Before
     fun setup() {
