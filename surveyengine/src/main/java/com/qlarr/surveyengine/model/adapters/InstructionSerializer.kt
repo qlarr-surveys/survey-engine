@@ -21,7 +21,7 @@ class InstructionSerializer : StdSerializer<Instruction>(Instruction::class.java
         gen.writeStringField("code", value.code)
         if (value is State) {
             gen.writeStringField("text", value.text)
-            gen.writeObjectField("returnType", value.returnType)
+            gen.writeStringField("returnType", value.returnType.name.lowercase())
             gen.writeBooleanField("isActive", value.isActive)
             if (value is SkipInstruction) {
                 gen.writeStringField("skipToComponent", value.skipToComponent)
@@ -118,8 +118,13 @@ class InstructionDeserializer : StdDeserializer<Instruction>(Instruction::class.
                 "skipToComponent" -> skipToComponent = node[name].textValue()
                 "toEnd" -> toEnd = node[name].booleanValue()
                 "isActive" -> isActive = node[name].booleanValue()
+                // TODO: Remove the if check once all the design files migrate to simple return types
                 "returnType" -> returnType =
-                    jacksonKtMapper.treeToValue(node[name] as ObjectNode, ReturnType::class.java)
+                    if (node[name].isTextual) {
+                        ReturnType.fromString(node[name].textValue())
+                    } else {
+                        ReturnType.fromString((node[name] as ObjectNode).get("name").textValue().lowercase())
+                    }
             }
         }
         return when {

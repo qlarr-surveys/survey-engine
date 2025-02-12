@@ -20,7 +20,7 @@ class CopyToJSONTest {
         )
         val json = jacksonKtMapper.readTree("{\"code\":\"Survey\"}")
         assertEquals(
-            "{\"code\":\"Survey\",\"qualifiedCode\":\"Survey\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":{\"name\":\"String\"},\"isActive\":false}],\"errors\":[\"DUPLICATE_CODE\"]}",
+            "{\"code\":\"Survey\",\"qualifiedCode\":\"Survey\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":\"string\",\"isActive\":false}],\"errors\":[\"DUPLICATE_CODE\"]}",
             component.copyErrorsToJSON(json as ObjectNode).toString()
         )
     }
@@ -58,7 +58,7 @@ class CopyToJSONTest {
         val json =
             jacksonKtMapper.readTree("{\"code\":\"Survey\",\"instructionList\":[{\"code\":\"conditional_relevance\",\"text\":\"false\",\"isActive\":false,\"returnType\":\"Boolean\"}]}")
         assertEquals(
-            "{\"code\":\"Survey\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":{\"name\":\"String\"},\"isActive\":false}],\"qualifiedCode\":\"Survey\"}",
+            "{\"code\":\"Survey\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":\"string\",\"isActive\":false}],\"qualifiedCode\":\"Survey\"}",
             component.copyErrorsToJSON(json as ObjectNode).toString()
         )
     }
@@ -84,7 +84,7 @@ class CopyToJSONTest {
         val json =
             jacksonKtMapper.readTree("{\"code\":\"Survey\",\"groups\":[{\"code\":\"G1\"},{\"code\":\"G2\"},{\"code\":\"G3\"}]}")
         assertEquals(
-            "{\"code\":\"Survey\",\"groups\":[{\"code\":\"G1\",\"qualifiedCode\":\"G1\",\"instructionList\":[{\"code\":\"value\",\"text\":\"G1\",\"returnType\":{\"name\":\"String\"},\"isActive\":false}]},{\"code\":\"G2\",\"qualifiedCode\":\"G2\",\"instructionList\":[{\"code\":\"value\",\"text\":\"G2\",\"returnType\":{\"name\":\"String\"},\"isActive\":false}]}],\"qualifiedCode\":\"Survey\"}",
+            "{\"code\":\"Survey\",\"groups\":[{\"code\":\"G1\",\"qualifiedCode\":\"G1\",\"instructionList\":[{\"code\":\"value\",\"text\":\"G1\",\"returnType\":\"string\",\"isActive\":false}]},{\"code\":\"G2\",\"qualifiedCode\":\"G2\",\"instructionList\":[{\"code\":\"value\",\"text\":\"G2\",\"returnType\":\"string\",\"isActive\":false}]}],\"qualifiedCode\":\"Survey\"}",
             component.copyErrorsToJSON(json as ObjectNode).toString()
         )
     }

@@ -52,7 +52,7 @@ class ScriptEngineValidation {
         input.forEach {
             val item = JSONObject()
             it.componentInstruction.instruction.run {
-                item.put("script", if (returnType == ReturnType.QlarrString && !isActive) "\"$text\"" else text)
+                item.put("script", if (returnType == ReturnType.STRING && !isActive) "\"$text\"" else text)
             }
             item.put("allowedVariables", JSONArray(it.dependencies))
             items.put(item)

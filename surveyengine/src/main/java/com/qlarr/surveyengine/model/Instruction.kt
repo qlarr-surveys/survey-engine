@@ -42,7 +42,7 @@ sealed class Instruction(
             })
         }
 
-        fun runnableInstruction() = RunnableInstruction(code, text(), ReturnType.QlarrMap, true, errors)
+        fun runnableInstruction() = RunnableInstruction(code, text(), ReturnType.MAP, true, errors)
 
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
         override fun clearErrors() = copy(errors = emptyList())
@@ -153,7 +153,7 @@ sealed class Instruction(
         override val reservedCode: ReservedCode = ReservedCode.Skip(code),
         override val isActive: Boolean = reservedCode.defaultIsActive(),
         override val errors: List<InstructionError> = listOf()
-    ) : State(reservedCode = reservedCode, text = condition, returnType = ReturnType.QlarrBoolean) {
+    ) : State(reservedCode = reservedCode, text = condition, returnType = ReturnType.BOOLEAN) {
         init {
             validate()
             if (!code.matches(Regex(SKIP_INSTRUCTION_PATTERN))) {

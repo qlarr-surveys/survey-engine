@@ -17,7 +17,7 @@ class JsonAdapterTest {
     private val SKIP =
         SkipInstruction(skipToComponent = "Q2", code = "skip_to_q4", condition = "true", isActive = false)
     private val SKIP_TEXT =
-        "{\"code\":\"skip_to_q4\",\"text\":\"true\",\"returnType\":{\"name\":\"Boolean\"},\"isActive\":false,\"skipToComponent\":\"Q2\",\"condition\":\"true\",\"toEnd\":false}"
+        "{\"code\":\"skip_to_q4\",\"text\":\"true\",\"returnType\":\"boolean\",\"isActive\":false,\"skipToComponent\":\"Q2\",\"condition\":\"true\",\"toEnd\":false}"
     private val PRIORITY_GROUPS = PriorityGroups(
         priorities = listOf(
             PriorityGroup(listOf(ChildPriority("Q1"), ChildPriority("Q2"))),
@@ -32,12 +32,12 @@ class JsonAdapterTest {
     private val REF_EQ_TEXT =
         "{\"code\":\"reference_label\",\"references\":[\"Q1.label\"],\"lang\":\"en\"}"
     private val DYNAMIC_EQ_TEXT =
-        "{\"code\":\"conditional_relevance\",\"text\":\"true\",\"returnType\":{\"name\":\"Boolean\"},\"isActive\":true}"
+        "{\"code\":\"conditional_relevance\",\"text\":\"true\",\"returnType\":\"boolean\",\"isActive\":true}"
     private val PARENT_REL_TEXT = "{\"code\":\"parent_relevance\",\"children\":[[\"A1\",\"A2\",\"A3\",\"A4\"]]}"
     private val VALUE_EQ_TEXT_INPUT =
-        "{\"code\":\"value\",\"text\":\"\",\"returnType\":{\"name\":\"String\"},\"isActive\":false}"
+        "{\"code\":\"value\",\"text\":\"\",\"returnType\":\"string\",\"isActive\":false}"
     private val VALUE_EQ_TEXT =
-        "{\"code\":\"value\",\"text\":\"\",\"returnType\":{\"name\":\"String\"},\"isActive\":false}"
+        "{\"code\":\"value\",\"text\":\"\",\"returnType\":\"string\",\"isActive\":false}"
     private val EQ_List_TEXT = "[$DYNAMIC_EQ_TEXT,$VALUE_EQ_TEXT]"
     private val DYNAMIC_EQ = SimpleState(
         text = "true",
@@ -59,7 +59,7 @@ class JsonAdapterTest {
 
     private val QUESTION = Question("Q2", listOf(SimpleState("true", ConditionalRelevance)))
     private val QUESTION_TEXT =
-        "{\"code\":\"Q2\",\"instructionList\":[{\"code\":\"conditional_relevance\",\"text\":\"true\",\"returnType\":{\"name\":\"Boolean\"},\"isActive\":true}],\"answers\":[],\"errors\":[]}"
+        "{\"code\":\"Q2\",\"instructionList\":[{\"code\":\"conditional_relevance\",\"text\":\"true\",\"returnType\":\"boolean\",\"isActive\":true}],\"answers\":[],\"errors\":[]}"
 
 
     private val G3Q5 = Question(
@@ -73,10 +73,10 @@ class JsonAdapterTest {
     )
 
     private val G3_TEXT =
-        "{\"code\":\"G3\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":{\"name\":\"String\"}," +
+        "{\"code\":\"G3\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":\"string\"," +
                 "\"isActive\":false}],\"questions\":[{\"code\":\"Q5\",\"instructionList\":[{\"code\":\"value\"," +
-                "\"text\":\"\",\"returnType\":{\"name\":\"String\"},\"isActive\":false}],\"answers\":[],\"errors\":[]}," +
-                "{\"code\":\"Q6\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":{\"name\":\"String\"}," +
+                "\"text\":\"\",\"returnType\":\"string\",\"isActive\":false}],\"answers\":[],\"errors\":[]}," +
+                "{\"code\":\"Q6\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":\"string\"," +
                 "\"isActive\":false}],\"answers\":[],\"errors\":[]}],\"groupType\":\"GROUP\",\"errors\":[]}"
     private val G3 = Group(
         code = "G3",
@@ -218,11 +218,11 @@ class JsonAdapterTest {
 
     @Test
     fun `serialises and deserialises Return Type`() {
-        val file = ReturnType.QlarrFile
-        assertEquals("{\"name\":\"File\"}", jacksonKtMapper.writeValueAsString(file))
+        val file = ReturnType.FILE
+        assertEquals("\"FILE\"", jacksonKtMapper.writeValueAsString(file))
         assertEquals(
             file,
-            jacksonKtMapper.readValue("{\"name\":\"File\"}", jacksonTypeRef<ReturnType>())
+            jacksonKtMapper.readValue("\"FILE\"", jacksonTypeRef<ReturnType>())
         )
     }
 
