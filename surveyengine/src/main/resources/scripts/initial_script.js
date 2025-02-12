@@ -11,7 +11,7 @@ function navigate(navigationInput) {
     valuesKeys.forEach(function(key){
         var value = navigationInput.values[key]
         var names = key.split('.')
-        qlarrVariables[names[0]][names[1]] = verifyValue(names[1], value.returnType.name, value.value)
+        qlarrVariables[names[0]][names[1]] = verifyValue(names[1], value.returnType.toLowerCase(), value.value)
     });
 
     navigationInput.sequence.forEach(function(systemInstruction, index) {
@@ -19,9 +19,9 @@ function navigate(navigationInput) {
         // Then we run active instructions
         // Or Defaults if they don't have value already
         if (instruction.isActive) {
-            qlarrVariables[systemInstruction.componentCode][instruction.code] = runInstruction(instruction.code, instruction.text, instruction.returnType.name)
+            qlarrVariables[systemInstruction.componentCode][instruction.code] = runInstruction(instruction.code, instruction.text, instruction.returnType.toLowerCase())
         } else if (instruction.text != null && typeof qlarrVariables[systemInstruction.componentCode][instruction.code] === 'undefined') {
-            if (instruction.returnType.name == "String") {
+            if (instruction.returnType.toLowerCase() == "string") {
                 var text = "\"" + instruction.text + "\""
             } else {
                 var text = instruction.text
@@ -29,8 +29,9 @@ function navigate(navigationInput) {
             try {
                 qlarrVariables[systemInstruction.componentCode][instruction.code] = JSON.parse(text)
             } catch (e) {
-                //print(e)
-                qlarrVariables[systemInstruction.componentCode][instruction.code] = defaultValue(instruction.code, instruction.returnType.name);
+                print(text)
+                print(e)
+                qlarrVariables[systemInstruction.componentCode][instruction.code] = defaultValue(instruction.code, instruction.returnType.toLowerCase());
             }
         }
     })
@@ -51,7 +52,7 @@ function verifyValue(code, returnTypeName, value) {
 
 function runInstruction(code, instructionText, returnTypeName) {
     try {
-        if (returnTypeName != "Map" && returnTypeName != "File") {
+        if (returnTypeName != "map" && returnTypeName != "file") {
             var value = eval(instructionText);
         } else {
             eval("var value = " + instructionText + ";");
@@ -69,28 +70,28 @@ function runInstruction(code, instructionText, returnTypeName) {
 
 function isCorrectReturnType(returnTypeName, value) {
     switch (returnTypeName) {
-        case "Boolean":
+        case "boolean":
             return typeof value === "boolean";
             break;
-        case "Date":
+        case "date":
             return QlarrScripts.isValidSqlDateTime(value);
             break;
-        case "Int":
+        case "int":
             return typeof value === "number" && value % 1 == 0;
             break;
-        case "Double":
+        case "double":
             return typeof value === "number";
             break;
-        case "List":
+        case "list":
             return Array.isArray(value);
             break;
-        case "String":
+        case "string":
             return typeof value === "string";
             break;
-        case "Map":
+        case "map":
             return typeof value === "object";
             break;
-        case "File":
+        case "file":
             if (typeof value !== "object") {
                 return false;
             } else {
@@ -111,26 +112,26 @@ function defaultValue(code, returnTypeName) {
         return true
     }
     switch (returnTypeName) {
-        case "Boolean":
+        case "boolean":
             return false;
             break;
-        case "Date":
+        case "date":
             return "1970-01-01 00:00:00";
             break;
-        case "String":
+        case "string":
             return "";
             break;
-        case "Int":
-        case "Double":
+        case "int":
+        case "double":
             return 0;
             break;
-        case "List":
+        case "list":
             return [];
             break;
-        case "Map":
+        case "map":
             return {};
             break;
-        case "File":
+        case "file":
             return {
                 filename: "", stored_filename: "", size: 0, type: ""
             };
