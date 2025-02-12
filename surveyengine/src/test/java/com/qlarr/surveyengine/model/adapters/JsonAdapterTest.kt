@@ -253,8 +253,8 @@ class JsonAdapterTest {
     fun `serializes and de-serializes toValidationJsonOutput`() {
         val validationJsonOutput = ValidationJsonOutput(
             schema = listOf(
-                ResponseField("Q1", ColumnName.VALUE, DataType.STRING),
-                ResponseField("Q2", ColumnName.ORDER, DataType.INT)
+                ResponseField("Q1", ColumnName.VALUE, ReturnType.STRING),
+                ResponseField("Q2", ColumnName.ORDER, ReturnType.INT)
             ),
             impactMap = mapOf(
                 Dependency("Q1", Value) to listOf(

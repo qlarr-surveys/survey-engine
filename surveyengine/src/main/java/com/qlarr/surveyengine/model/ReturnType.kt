@@ -17,17 +17,6 @@ enum class ReturnType {
         }
     }
 
-    fun toDbType(): DataType = when (this) {
-        LIST -> DataType.LIST
-        BOOLEAN -> DataType.BOOLEAN
-        DATE -> DataType.DATE
-        DOUBLE -> DataType.DOUBLE
-        FILE -> DataType.FILE
-        INT -> DataType.INT
-        MAP -> DataType.MAP
-        STRING -> DataType.STRING
-    }
-
     companion object{
         fun fromString(text:String) = entries.first { it.name.lowercase() == text }
     }

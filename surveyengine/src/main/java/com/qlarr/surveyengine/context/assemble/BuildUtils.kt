@@ -57,9 +57,9 @@ internal fun List<SurveyComponent>.getSchema(
     forEach { component ->
         val code = component.uniqueCode(parentCode)
         if (randomizedChildrenCodes.contains(component.code))
-            returnList.add(ResponseField(code, ColumnName.ORDER, DataType.INT))
+            returnList.add(ResponseField(code, ColumnName.ORDER, ReturnType.INT))
         if (prioritisedChildrenCodes.contains(component.code))
-            returnList.add(ResponseField(code, ColumnName.PRIORITY, DataType.INT))
+            returnList.add(ResponseField(code, ColumnName.PRIORITY, ReturnType.INT))
         if (component.code.matches(Regex(VALID_QUESTION_CODE)) || component.code.matches(Regex(VALID_ANSWER_CODE))) {
             component.instructionList.firstOrNull { it is Instruction.State && it.reservedCode == ReservedCode.Value }
                 ?.let {
@@ -67,7 +67,7 @@ internal fun List<SurveyComponent>.getSchema(
                         ResponseField(
                             code,
                             ColumnName.VALUE,
-                            (it as Instruction.State).returnType.toDbType()
+                            (it as Instruction.State).returnType
                         )
                     )
                 }

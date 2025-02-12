@@ -4,7 +4,7 @@ package com.qlarr.surveyengine.model
 data class ResponseField(
     val componentCode: String,
     val columnName: ColumnName,
-    val returnType: ReturnType
+    val dataType: ReturnType
 ) {
     @Suppress("unused")
     fun toValueKey() = "$componentCode.${columnName.name.lowercase()}"
