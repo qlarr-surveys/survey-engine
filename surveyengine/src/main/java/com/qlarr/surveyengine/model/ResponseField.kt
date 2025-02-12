@@ -4,13 +4,10 @@ package com.qlarr.surveyengine.model
 data class ResponseField(
     val componentCode: String,
     val columnName: ColumnName,
-    val dataType: DataType
+    val returnType: ReturnType
 ) {
+    @Suppress("unused")
     fun toValueKey() = "$componentCode.${columnName.name.lowercase()}"
-}
-
-enum class DataType {
-    BOOLEAN, STRING, INT, DOUBLE, LIST, MAP, DATE, FILE
 }
 
 enum class ColumnName {
@@ -18,8 +15,3 @@ enum class ColumnName {
     ORDER,
     PRIORITY;
 }
-
-data class ResponseLabel(
-    val type: String,
-    val label: String
-)
