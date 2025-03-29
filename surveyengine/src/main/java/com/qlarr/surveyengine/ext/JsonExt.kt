@@ -171,30 +171,24 @@ fun ObjectNode.flatten(
 
 // only public for testing
 internal fun ObjectNode.reduceContent(lang: String? = null, defaultLang: String) {
-    val code = lang ?: defaultLang
     (get("content") as? ObjectNode)?.let { content ->
-        val fieldsToRemove = mutableListOf<String>()
-        content.fieldNames().forEach { fieldName ->
-            val contentToBeLocalised = content.get(fieldName)
-            if (contentToBeLocalised is ObjectNode && contentToBeLocalised.size() > 0) {
-                val node = contentToBeLocalised.get(code) ?: contentToBeLocalised.get(defaultLang)
-                content.set<JsonNode>(fieldName, node)
-            } else {
-                fieldsToRemove.add(fieldName)
+        val mergedNode = content.get(defaultLang) as? ObjectNode ?: JsonNodeFactory.instance.objectNode()
+        lang?.let {
+            (content.get(lang) as? ObjectNode)?.let { localisedNode ->
+                localisedNode.fieldNames().forEach {
+                    mergedNode.set<JsonNode>(it, localisedNode.get(it))
+                }
             }
         }
-        fieldsToRemove.forEach { fieldName ->
-            content.remove(fieldName)
-        }
-
+        set<ObjectNode>("content", mergedNode)
     }
     (get("validation") as? ObjectNode)?.let { validation ->
         validation.fieldNames().forEach { validationField ->
             (validation.get(validationField) as? ObjectNode)?.let { validationItem ->
                 validationItem.get("content")?.let { contentToBeLocalised ->
                     if (contentToBeLocalised is ObjectNode && contentToBeLocalised.size() > 0) {
-                        val node =
-                            contentToBeLocalised.get(code) ?: contentToBeLocalised.get(defaultLang)
+                        val node = lang?.let { contentToBeLocalised.get(it) }
+                            ?: contentToBeLocalised.get(defaultLang)
                         validationItem.set<JsonNode>("content", node)
                         validation.set<JsonNode>(validationField, validationItem)
                     }

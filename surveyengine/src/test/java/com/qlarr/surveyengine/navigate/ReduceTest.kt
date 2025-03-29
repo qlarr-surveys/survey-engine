@@ -50,17 +50,19 @@ class ReduceTest {
     @Test
     fun reduceContent() {
         val objectNode = jacksonKtMapper.readTree(
-            "{\"content\": {\n" +
-                    "    \"sdf\": \"sdf\",\n" +
-                    "    \"survey_title\": {\n" +
-                    "      \"de\": \"Kundenzufriedenheitsumfrage\",\n" +
-                    "      \"en\": \"Customer Satisfaction Survey\"\n" +
+            "{\n" +
+                    "  \"content\": {\n" +
+                    "    \"en\": {\n" +
+                    "      \"survey_title\": \"Customer Satisfaction Survey\",\n" +
+                    "      \"title\": \"Customer Satisfaction Survey\"\n" +
                     "    },\n" +
-                    "    \"title\": {\n" +
-                    "      \"de\": \"Kundenzufriedenheitsumfrage\",\n" +
-                    "      \"en\": \"Customer Satisfaction Survey\"\n" +
-                    "    }\n" +
-                    "  }}"
+                    "    \"de\": {\n" +
+                    "      \"survey_title\": \"Kundenzufriedenheitsumfrage\",\n" +
+                    "      \"title\": \"Kundenzufriedenheitsumfrage\"\n" +
+                    "    },\n" +
+                    "    \"sdf\": \"sdf\"\n" +
+                    "  }\n" +
+                    "}"
         ) as ObjectNode
         assertEquals(
             "{\"content\":{\"survey_title\":\"Customer Satisfaction Survey\",\"title\":\"Customer Satisfaction Survey\"}}",
@@ -68,6 +70,32 @@ class ReduceTest {
         )
         assertEquals(
             "{\"content\":{\"survey_title\":\"Kundenzufriedenheitsumfrage\",\"title\":\"Kundenzufriedenheitsumfrage\"}}",
+            objectNode.deepCopy().apply { reduceContent(SurveyLang.DE.code, SurveyLang.EN.code) }.toString()
+        )
+
+    }
+    @Test
+    fun reduceContent1() {
+        val objectNode = jacksonKtMapper.readTree(
+            "{\n" +
+                    "  \"content\": {\n" +
+                    "    \"en\": {\n" +
+                    "      \"survey_title\": \"Customer Satisfaction Survey1\",\n" +
+                    "      \"title\": \"Customer Satisfaction Survey2\"\n" +
+                    "    },\n" +
+                    "    \"de\": {\n" +
+                    "      \"survey_title\": \"Kundenzufriedenheitsumfrage\"" +
+                    "    },\n" +
+                    "    \"sdf\": \"sdf\"\n" +
+                    "  }\n" +
+                    "}"
+        ) as ObjectNode
+        assertEquals(
+            "{\"content\":{\"survey_title\":\"Customer Satisfaction Survey1\",\"title\":\"Customer Satisfaction Survey2\"}}",
+            objectNode.deepCopy().apply { reduceContent(SurveyLang.EN.code, SurveyLang.EN.code) }.toString()
+        )
+        assertEquals(
+            "{\"content\":{\"survey_title\":\"Kundenzufriedenheitsumfrage\",\"title\":\"Customer Satisfaction Survey2\"}}",
             objectNode.deepCopy().apply { reduceContent(SurveyLang.DE.code, SurveyLang.EN.code) }.toString()
         )
 

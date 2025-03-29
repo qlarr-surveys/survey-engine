@@ -47,16 +47,16 @@ data class ValidationJsonOutput(
             add(JsonNodeFactory.instance.objectNode().apply {
                 put("code", "G1")
                 set<JsonNode>("content", JsonNodeFactory.instance.objectNode().apply {
-                    set<JsonNode>("label", JsonNodeFactory.instance.objectNode().apply {
-                        put("en", "First Page")
+                    set<JsonNode>("en", JsonNodeFactory.instance.objectNode().apply {
+                        put("label", "First Page")
                     })
                 })
                 put("groupType", "GROUP")
                 set<JsonNode>("questions", JsonNodeFactory.instance.arrayNode().apply {
                     add(JsonNodeFactory.instance.objectNode().apply {
                         set<JsonNode>("content", JsonNodeFactory.instance.objectNode().apply {
-                            set<JsonNode>("label", JsonNodeFactory.instance.objectNode().apply {
-                                put("en", "Sample Text Question")
+                            set<JsonNode>("en", JsonNodeFactory.instance.objectNode().apply {
+                                put("label", "Sample Text Question")
                             })
                         })
                         put("code", "Q1")
@@ -66,8 +66,8 @@ data class ValidationJsonOutput(
             })
             add(JsonNodeFactory.instance.objectNode().apply {
                 set<JsonNode>("content", JsonNodeFactory.instance.objectNode().apply {
-                    set<JsonNode>("label", JsonNodeFactory.instance.objectNode().apply {
-                        put("en", "End Page")
+                    set<JsonNode>("en", JsonNodeFactory.instance.objectNode().apply {
+                        put("label", "End Page")
                     })
                 })
                 put("code", "G2")
@@ -75,8 +75,8 @@ data class ValidationJsonOutput(
                 set<JsonNode>("questions", JsonNodeFactory.instance.arrayNode().apply {
                     add(JsonNodeFactory.instance.objectNode().apply {
                         set<JsonNode>("content", JsonNodeFactory.instance.objectNode().apply {
-                            set<JsonNode>("label", JsonNodeFactory.instance.objectNode().apply {
-                                put("en", "Bye Question")
+                            set<JsonNode>("en", JsonNodeFactory.instance.objectNode().apply {
+                                put("label", "Bye Question")
                             })
                         })
                         put("code", "Q2")
@@ -89,8 +89,8 @@ data class ValidationJsonOutput(
         fun new(surveyName: String) = ValidationJsonOutput(
             survey = JsonNodeFactory.instance.objectNode().apply {
                 set<JsonNode>("content", JsonNodeFactory.instance.objectNode().apply {
-                    set<JsonNode>("label", JsonNodeFactory.instance.objectNode().apply {
-                        put("en", surveyName)
+                    set<JsonNode>("en", JsonNodeFactory.instance.objectNode().apply {
+                        put("label", surveyName)
                     })
                 })
                 set<JsonNode>("groups", groups)
