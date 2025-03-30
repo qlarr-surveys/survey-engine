@@ -283,15 +283,8 @@ fun SurveyComponent.copyErrorsToJSON(surveyDef: ObjectNode, parentCode: String =
 
 internal fun ObjectNode.getLabel(lang: String, defaultLang: String): String {
     return (get("content") as? ObjectNode)?.let { content ->
-        (content.get("label") as? ObjectNode)?.let { label ->
-            if (label.has(lang)) {
-                label.get(lang).textValue()
-            } else if (label.has(lang)) {
-                label.get(defaultLang).textValue()
-            } else {
-                ""
-            }
-        }
+        ((content[lang] as? ObjectNode)?.get("label") as? TextNode)?.textValue()
+            ?: ((content[defaultLang] as? ObjectNode)?.get("label") as? TextNode)?.textValue()
     } ?: ""
 }
 
