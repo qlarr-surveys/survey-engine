@@ -290,9 +290,7 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
             separator = " && ",
             transform = {
                 "(!${it.uniqueCode(qualifiedCode)}.in_current_navigation || !${it.uniqueCode(qualifiedCode)}.relevance || ${
-                    it.uniqueCode(
-                        qualifiedCode
-                    )
+                    it.uniqueCode(qualifiedCode)
                 }.validity)"
             })
     } else if (this is Question || this is Answer) {
@@ -316,7 +314,7 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
                 postfix = "",
                 separator = " && ",
                 transform = {
-                    "${it.uniqueCode(qualifiedCode)}.validity"
+                    "$(!{it.uniqueCode(qualifiedCode)}.relevance && ${it.uniqueCode(qualifiedCode)}.validity)"
                 })
     }
     return if (validationText.isNotEmpty()) {

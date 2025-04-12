@@ -43,12 +43,12 @@ data class ValidationJsonOutput(
     }
 
     companion object {
-        private val groups = JsonNodeFactory.instance.arrayNode().apply {
+        private fun groups(surveyName: String) = JsonNodeFactory.instance.arrayNode().apply {
             add(JsonNodeFactory.instance.objectNode().apply {
                 put("code", "G1")
                 set<JsonNode>("content", JsonNodeFactory.instance.objectNode().apply {
                     set<JsonNode>("en", JsonNodeFactory.instance.objectNode().apply {
-                        put("label", "First Page")
+                        put("label", surveyName)
                     })
                 })
                 put("groupType", "GROUP")
@@ -88,12 +88,7 @@ data class ValidationJsonOutput(
 
         fun new(surveyName: String) = ValidationJsonOutput(
             survey = JsonNodeFactory.instance.objectNode().apply {
-                set<JsonNode>("content", JsonNodeFactory.instance.objectNode().apply {
-                    set<JsonNode>("en", JsonNodeFactory.instance.objectNode().apply {
-                        put("label", surveyName)
-                    })
-                })
-                set<JsonNode>("groups", groups)
+                set<JsonNode>("groups", groups(surveyName))
                 set<JsonNode>("defaultLang", jacksonKtMapper.valueToTree(SurveyLang.EN))
                 set<TextNode>("code", TextNode("Survey"))
                 set<TextNode>("navigationMode", TextNode(NavigationMode.GROUP_BY_GROUP.name.lowercase()))
