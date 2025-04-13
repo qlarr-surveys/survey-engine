@@ -314,7 +314,7 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
                 postfix = "",
                 separator = " && ",
                 transform = {
-                    "(!${it.uniqueCode(qualifiedCode)}.relevance && ${it.uniqueCode(qualifiedCode)}.validity)"
+                    "(!${it.uniqueCode(qualifiedCode)}.relevance || ${it.uniqueCode(qualifiedCode)}.validity)"
                 })
     }
     return if (validationText.isNotEmpty()) {
