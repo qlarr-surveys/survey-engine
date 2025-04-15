@@ -224,46 +224,8 @@ internal fun MutableList<SurveyComponent>.addPrioritisedInstruction(parentCode: 
             children = newComponent.children.toMutableList().apply { addPrioritisedInstruction(parentCode) })
         set(index, newComponent)
     }
-
 }
 
-internal fun MutableList<SurveyComponent>.addRelevanceToSkipInstructions(parentCode: String = "") {
-    forEachIndexed { index, surveyComponent ->
-        if (surveyComponent.hasErrors()) {
-            return@forEachIndexed
-        }
-        val code = surveyComponent.uniqueCode(parentCode)
-        var newComponent = surveyComponent.duplicate(children = surveyComponent.children.toMutableList().apply {
-            addRelevanceToSkipInstructions(
-                code
-            )
-        })
-        if (surveyComponent !is Survey) {
-            surveyComponent
-                .instructionList
-                .filterIsInstance<Instruction.SkipInstruction>()
-                .filter { it.errors.isEmpty() }
-                .forEach { skipInstruction ->
-                    val newSkipInstruction = skipInstruction.copy(
-                        text = "$code.relevance && (${skipInstruction.condition})",
-                        isActive = true
-                    )
-                    newComponent = newComponent.duplicate(
-                        instructionList = newComponent
-                            .instructionList
-                            .toMutableList()
-                            .apply {
-                                set(
-                                    newComponent.instructionList.indexOf(skipInstruction),
-                                    newSkipInstruction
-                                )
-                            })
-                }
-        }
-        set(index, newComponent)
-
-    }
-}
 
 internal fun MutableList<SurveyComponent>.addValidityInstructions() {
     forEachIndexed { index, surveyComponent ->

@@ -76,10 +76,15 @@ internal class DependencyMapper {
         var instructionText = instruction.text
         val returnList = mutableListOf<Dependency>()
         forEach { dependency ->
+            // if I am dependent on a relevance instruction
             if (dependency.reservedCode == Relevance && dependency.componentCode != component.code) {
                 val commonParent =
                     qualifiedComponents.commonParent(component.code, dependency.componentCode)
+                // our common parent has a child relevance instruction
                 if (commonParent?.instructionList?.any { it.code == ChildrenRelevance.code } == true) {
+                    // Then we are in trouble, i depend on my sibling, which depends on my parent which depends on us
+                    // But now I will break my siblings relevance and consume directly its dependencies, excluding
+                    // the parent dependency, because mine is dependent on it anyways
                     val replacementList = spreadCyclicalRelevance(dependentsMap, commonParent.code, listOf(dependency))
                     instructionText = instructionText.replace(
                         oldValue = dependency.asCode(),

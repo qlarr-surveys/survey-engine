@@ -238,6 +238,6 @@ data class NotSkippedInstructionManifesto(
     private fun toOrderText() = if (toOrderNecessary) "$toBeSkippedCode.order > $toComponent.order || " else ""
     fun text() =
         (if (anyOrder()) "(" else "") +
-                "${fromOrderText()}${toOrderText()}!${dependency.asCode()}" +
+                "${fromOrderText()}${toOrderText()}!${dependency.asCode()} || !${dependency.componentCode}.relevance" +
                 (if (anyOrder()) ")" else "")
 }
