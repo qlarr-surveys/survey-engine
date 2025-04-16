@@ -1,6 +1,5 @@
 package com.qlarr.surveyengine.usecase
 
-import com.fasterxml.jackson.databind.BeanDescription
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.BooleanNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
@@ -44,18 +43,13 @@ data class ValidationJsonOutput(
     }
 
     companion object {
-        private fun groups(surveyName: String, surveyDescription: String?) = JsonNodeFactory.instance.arrayNode().apply {
+        private fun groups(surveyName: String) = JsonNodeFactory.instance.arrayNode().apply {
             add(JsonNodeFactory.instance.objectNode().apply {
                 put("code", "G1")
                 set<JsonNode>("content", JsonNodeFactory.instance.objectNode().apply {
                     set<JsonNode>("en", JsonNodeFactory.instance.objectNode().apply {
                         put("label", surveyName)
                     })
-                    surveyDescription?.takeIf { it.isNotBlank() } ?.let {
-                        set<JsonNode>("en", JsonNodeFactory.instance.objectNode().apply {
-                            put("description", it)
-                        })
-                    }
                 })
                 put("groupType", "GROUP")
                 set<JsonNode>("questions", JsonNodeFactory.instance.arrayNode().apply {
@@ -92,9 +86,8 @@ data class ValidationJsonOutput(
             })
         }
 
-        fun new(surveyName: String, surveyDescription: String?) = ValidationJsonOutput(
+        fun new(surveyName: String) = ValidationJsonOutput(
             survey = JsonNodeFactory.instance.objectNode().apply {
-                set<JsonNode>("groups", groups(surveyName, surveyDescription))
                 set<JsonNode>("defaultLang", jacksonKtMapper.valueToTree(SurveyLang.EN))
                 set<TextNode>("code", TextNode("Survey"))
                 set<TextNode>("navigationMode", TextNode(NavigationMode.GROUP_BY_GROUP.name.lowercase()))
