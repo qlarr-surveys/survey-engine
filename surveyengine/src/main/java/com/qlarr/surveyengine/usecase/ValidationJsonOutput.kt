@@ -1,5 +1,6 @@
 package com.qlarr.surveyengine.usecase
 
+import com.fasterxml.jackson.databind.BeanDescription
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.BooleanNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
@@ -88,6 +89,7 @@ data class ValidationJsonOutput(
 
         fun new(surveyName: String) = ValidationJsonOutput(
             survey = JsonNodeFactory.instance.objectNode().apply {
+                set<JsonNode>("groups", groups(surveyName))
                 set<JsonNode>("defaultLang", jacksonKtMapper.valueToTree(SurveyLang.EN))
                 set<TextNode>("code", TextNode("Survey"))
                 set<TextNode>("navigationMode", TextNode(NavigationMode.GROUP_BY_GROUP.name.lowercase()))
