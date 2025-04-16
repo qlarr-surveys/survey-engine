@@ -1,6 +1,5 @@
 package com.qlarr.surveyengine.context.assemble
 
-import com.qlarr.surveyengine.model.ReservedCode
 import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.ext.splitToComponentCodes
 import com.qlarr.surveyengine.model.*
@@ -237,7 +236,6 @@ data class NotSkippedInstructionManifesto(
     private fun fromOrderText() = if (fromOrderNecessary) "$toBeSkippedCode.order < $fromComponent.order || " else ""
     private fun toOrderText() = if (toOrderNecessary) "$toBeSkippedCode.order > $toComponent.order || " else ""
     fun text() =
-        (if (anyOrder()) "(" else "") +
-                "${fromOrderText()}${toOrderText()}!${dependency.asCode()} || !${dependency.componentCode}.relevance" +
-                (if (anyOrder()) ")" else "")
+        "(${fromOrderText()}${toOrderText()}!${dependency.asCode()} || !${dependency.componentCode}.relevance)"
+
 }
