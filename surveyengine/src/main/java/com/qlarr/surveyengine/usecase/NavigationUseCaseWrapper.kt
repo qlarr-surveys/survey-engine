@@ -25,7 +25,13 @@ class NavigationUseCaseWrapperImpl(
         validationJsonOutput.survey,
         useCaseInput.values,
         useCaseInput.navigationInfo,
-        validationJsonOutput.surveyNavigationData().navigationMode,
+        navigationMode = when (useCaseInput.navigationInfo.navigationIndex) {
+            is NavigationIndex.Group -> NavigationMode.GROUP_BY_GROUP
+            is NavigationIndex.Groups -> NavigationMode.ALL_IN_ONE
+            is NavigationIndex.Question -> NavigationMode.QUESTION_BY_QUESTION
+            is NavigationIndex.End -> null
+            null -> null
+        } ?: useCaseInput.navigationMode ?: validationJsonOutput.surveyNavigationData().navigationMode,
         useCaseInput.lang ?: validationJsonOutput.survey.defaultLang(),
         skipInvalid,
         surveyMode
